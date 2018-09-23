@@ -1,5 +1,6 @@
 
 #include "gui/simpleWindow.h"
+#include "gui/ui/mainWindow.h"
 
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <QApplication>
@@ -14,7 +15,7 @@ int main( int argc, char** argv )
 {
     QApplication app( argc, argv );
 
-    SimpleWindow window;
+    SimpleWindowWithGL window;
 
     window.show();
 

@@ -18,7 +18,7 @@ subdir('src')
 
 processed = qt5_mod.preprocess(
   moc_headers : [gui_moc_headers],
-  ui_files : 'mainWindow.ui',
+  ui_files : [gui_ui_files],
 )
 
 executable('testOpenMesh', sources: [source_file,
