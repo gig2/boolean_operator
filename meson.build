@@ -15,6 +15,8 @@ openmesh_dep = dependency('openmesh', required:true)
 
 subdir('src')
 
+includeDir = include_directories('src')
+
 
 processed = qt5_mod.preprocess(
   moc_headers : [src_moc_headers],
@@ -30,5 +32,7 @@ executable('testOpenMesh', sources: [source_file,
                           qt5opengl,
                           glew_dep,
                           glm_dep,
-                          openmesh_dep])
+                          openmesh_dep],
+            include_directories: includeDir
+                  )
 

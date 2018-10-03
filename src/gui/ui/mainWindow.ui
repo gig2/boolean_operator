@@ -14,7 +14,7 @@
    <string>MainWindow GL Render</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QOpenGLWidget" name="openGLWidget">
+   <widget class="MainOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -37,6 +37,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MainOpenGLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>gui/mainopenglwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

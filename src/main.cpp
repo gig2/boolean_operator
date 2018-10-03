@@ -1,6 +1,6 @@
 
 #include "gui/simpleWindow.h"
-#include "gui/ui/mainWindow.h"
+#include "gui/mainWindow.h"
 
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <QApplication>
