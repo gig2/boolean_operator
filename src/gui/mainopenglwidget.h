@@ -19,22 +19,14 @@ public:
         setFormat( format );
 
         create();
-
-        makeCurrent();
-
-        initializeOpenGLFunctions();
-
-        initializeGL();
-        paintGL();
-
-        doneCurrent();
     }
 
 protected:
     void initializeGL() override
     {
+        initializeOpenGLFunctions();
         //
-        glClearColor( 1.0f, 0.0f, 1.0f, 1.0f );
+        glClearColor( .3f, 0.3f, 0.3f, 1.0f );
     }
 
     void resizeGL( int width, int height ) override
@@ -49,5 +41,5 @@ protected:
     }
 
 private:
-    std::unique_ptr<QOpenGLContext> context;
+    /* std::unique_ptr<QOpenGLContext> context; */
 };
