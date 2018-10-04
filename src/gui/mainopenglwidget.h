@@ -1,10 +1,11 @@
 #pragma once
 
-#include <QOpenGLFunctions>
+#include "engine/Engine-main.h"
+/* #include <QOpenGLFunctions> */
 #include <QOpenGLWidget>
 #include <QWidget>
 
-class MainOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class MainOpenGLWidget : public QOpenGLWidget //, protected QOpenGLFunctions
 {
 public:
     explicit MainOpenGLWidget( QWidget *parent )
@@ -24,7 +25,15 @@ public:
 protected:
     void initializeGL() override
     {
-        initializeOpenGLFunctions();
+        glewExperimental = GL_TRUE;
+        GLenum initGlew{glewInit()};
+
+        if ( initGlew != GLEW_OK )
+        {
+            throw std::runtime_error(
+                reinterpret_cast<const char *>( glewGetErrorString( initGlew ) ) );
+        }
+        /* initializeOpenGLFunctions(); */
         //
         glClearColor( .3f, 0.3f, 0.3f, 1.0f );
     }
@@ -41,5 +50,6 @@ protected:
     }
 
 private:
+    S3DE::CEngine<MainOpenGLWidget> engine_;
     /* std::unique_ptr<QOpenGLContext> context; */
 };
