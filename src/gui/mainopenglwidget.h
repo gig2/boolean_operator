@@ -49,33 +49,69 @@ public:
         create();
     }
 
+signals:
+    void ambientValueChanged( double value );
+    void diffuseValueChanged( double value );
+    void linearValueChanged( double value );
+    void expValueChanged( double value );
+
+
 public slots:
     void updateAmbient( int value )
     {
+        float ambientIntensity = value / 99.;
+
         for ( auto &pl : pointLight_ )
         {
-            pl.AmbientIntensity = value / 99.;
+            pl.AmbientIntensity = ambientIntensity;
         }
         engine_.AttachLight( pointLight_ );
+        ambientValueChanged( static_cast<double>( ambientIntensity ) );
         update();
     }
     void updateDiffuse( int value )
     {
+        float diffuseIntensity = value / 99.;
         for ( auto &pl : pointLight_ )
         {
-            pl.DiffuseIntensity = value / 99.;
+            pl.DiffuseIntensity = diffuseIntensity;
         }
         engine_.AttachLight( pointLight_ );
+        diffuseValueChanged( static_cast<double>( diffuseIntensity ) );
         update();
     }
 
     void updateLinear( int value )
     {
+        float start = 0.00001;
+        float end   = 1.;
+
+        float t = value / 99.;
+
+        float linear = start * ( 1 - t ) + t * end;
+
         for ( auto &pl : pointLight_ )
         {
-            pl.Attenuation.Linear = value / 99.;
+            pl.Attenuation.Linear = linear;
         }
         engine_.AttachLight( pointLight_ );
+        linearValueChanged( static_cast<double>( linear ) );
+        update();
+    }
+
+    void updateExp( int value )
+    {
+        float start = 0.;
+        float end   = 0.05;
+        float t     = value / 99.;
+
+        float exponential = start * ( 1 - t ) + end * t;
+        for ( auto &pl : pointLight_ )
+        {
+            pl.Attenuation.Exp = exponential;
+        }
+        engine_.AttachLight( pointLight_ );
+        expValueChanged( static_cast<double>( exponential ) );
         update();
     }
 
@@ -118,11 +154,11 @@ protected:
         engine_.SetNodeAnimation( "bunny", "idle" );
 
 
-        float ambient{0.2};
-        float diffuse{0.9};
-        float linear{0.0001};
+        float ambient{0.};
+        float diffuse{0.};
+        float linear{0.00001};
         float constant{1.0};
-        float exp{0.05};
+        float exp{0.0};
 
         S3DE::PointLight pl0;
         pl0.Color                = glm::vec3{1.0, 1.0, 1.0};
@@ -138,6 +174,11 @@ protected:
 
         pointLight_.push_back( pl0 );
         pointLight_.push_back( pl1 );
+
+        ambientValueChanged( static_cast<double>( ambient ) );
+        diffuseValueChanged( static_cast<double>( diffuse ) );
+        linearValueChanged( static_cast<double>( linear ) );
+        expValueChanged( static_cast<double>( exp ) );
 
         engine_.AttachLight( pointLight_ );
 

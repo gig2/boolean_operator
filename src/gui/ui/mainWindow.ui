@@ -17,26 +17,23 @@
    <widget class="MainOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>10</x>
       <y>0</y>
-      <width>411</width>
-      <height>351</height>
+      <width>781</width>
+      <height>371</height>
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="formLayoutWidget">
+   <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>50</y>
-      <width>151</width>
-      <height>81</height>
+      <x>10</x>
+      <y>380</y>
+      <width>341</width>
+      <height>171</height>
      </rect>
     </property>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::ExpandingFieldsGrow</enum>
-     </property>
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -53,27 +50,16 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLCDNumber" name="ambientLcd">
+         <property name="digitCount">
+          <number>7</number>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item row="1" column="0">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Diffuse</string>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QSlider" name="diffuseIntensity">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLabel" name="label_3">
@@ -89,7 +75,68 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLCDNumber" name="linearLcd">
+         <property name="digitCount">
+          <number>7</number>
+         </property>
+        </widget>
+       </item>
       </layout>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Diffuse</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="diffuseIntensity">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLCDNumber" name="diffuseLcd">
+         <property name="digitCount">
+          <number>7</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>390</y>
+      <width>281</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Exp</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="exponentialAttenuation">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLCDNumber" name="exponentialLcd"/>
      </item>
     </layout>
    </widget>
@@ -112,9 +159,14 @@
    <extends>QOpenGLWidget</extends>
    <header>gui/mainopenglwidget.h</header>
    <slots>
+    <signal>ambientValueChanged(double)</signal>
+    <signal>diffuseValueChanged(double)</signal>
+    <signal>linearValueChanged(double)</signal>
+    <signal>expValueChanged(double)</signal>
     <slot>updateAmbient(int)</slot>
     <slot>updateDiffuse(int)</slot>
     <slot>updateLinear(int)</slot>
+    <slot>updateExp(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -165,6 +217,86 @@
     <hint type="destinationlabel">
      <x>405</x>
      <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>ambientValueChanged(double)</signal>
+   <receiver>ambientLcd</receiver>
+   <slot>display(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>287</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>diffuseValueChanged(double)</signal>
+   <receiver>diffuseLcd</receiver>
+   <slot>display(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>linearValueChanged(double)</signal>
+   <receiver>linearLcd</receiver>
+   <slot>display(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>465</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openGLWidget</sender>
+   <signal>expValueChanged(double)</signal>
+   <receiver>exponentialLcd</receiver>
+   <slot>display(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exponentialAttenuation</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>updateExp(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>539</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>205</y>
     </hint>
    </hints>
   </connection>
