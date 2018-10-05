@@ -17,25 +17,81 @@
    <widget class="MainOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>9</y>
-      <width>621</width>
-      <height>541</height>
+      <x>200</x>
+      <y>0</y>
+      <width>411</width>
+      <height>351</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>649</x>
-      <y>30</y>
-      <width>111</width>
-      <height>23</height>
+      <x>40</x>
+      <y>50</y>
+      <width>151</width>
+      <height>81</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Just for the lol</string>
-    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Ambient</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="ambientIntensity">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Diffuse</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignLeft">
+        <widget class="QSlider" name="diffuseIntensity">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>linear</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="linearAttenuation">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -55,8 +111,62 @@
    <class>MainOpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>gui/mainopenglwidget.h</header>
+   <slots>
+    <slot>updateAmbient(int)</slot>
+    <slot>updateDiffuse(int)</slot>
+    <slot>updateLinear(int)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>ambientIntensity</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>updateAmbient(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>709</x>
+     <y>117</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>diffuseIntensity</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>updateDiffuse(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>132</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>405</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linearAttenuation</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>updateLinear(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>123</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>405</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
