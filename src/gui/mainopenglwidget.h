@@ -128,8 +128,8 @@ protected:
         }
 
 
-        S3DE::EngineShader engineShader{"shader/lighting.vs", "shader/lighting.fs",
-                                        "shader/lighting.gs", "", ""};
+        S3DE::EngineShader engineShader{"shader/color.vs", "shader/color.fs",
+                                        "shader/color.gs", "", ""};
 
         S3DE::EngineWindow engineWindow;
         engineWindow.shader = engineShader;
@@ -153,6 +153,7 @@ protected:
         engine_.SetNodeScale( "bunny", 5. );
         engine_.SetNodeAnimation( "bunny", "idle" );
 
+        // setup positional light
 
         float ambient{0.};
         float diffuse{0.};
@@ -181,6 +182,30 @@ protected:
         expValueChanged( static_cast<double>( exp ) );
 
         engine_.AttachLight( pointLight_ );
+
+        // now the spotlight
+
+        glm::vec3 direction{-5, -5, -3};
+        direction = glm::normalize( direction );
+
+        direction[ 0 ] = direction[ 0 ] * 2.;
+        direction[ 1 ] = direction[ 1 ] * 2.;
+        direction[ 2 ] = direction[ 2 ] * 2.;
+
+        S3DE::SpotLight sl;
+        sl.Color                = glm::vec3{1.0, 1.0, 1.0};
+        sl.AmbientIntensity     = 0.2;
+        sl.DiffuseIntensity     = 0.6;
+        sl.Attenuation.Constant = 1.;
+        sl.Attenuation.Exp      = 0.005;
+        sl.Direction            = direction;
+        sl.Cutoff               = M_PI / 16.0;
+        sl.Position             = glm::vec3{5, 5, 3} + glm::vec3{10, 10, 0};
+
+        spotLight_.push_back( sl );
+
+        engine_.AttachLight( spotLight_ );
+
 
 
         // initializeOpenGLFunctions();
@@ -214,6 +239,7 @@ private:
     S3DE::CEngine<QtGLWindow> engine_;
     // std::vector<S3DE::MeshData> pmeshData_;
     std::vector<S3DE::PointLight> pointLight_;
+    std::vector<S3DE::SpotLight> spotLight_;
 
     // S3DE::Camera camera_;
 
