@@ -22,6 +22,7 @@ processed = qt5_mod.preprocess(
 )
 
 executable('testOpenMesh', sources: [source_file,
+                                     source_header,
                                      gui_source_file,
                                      gui_include_file
                                      , processed],
