@@ -1,10 +1,11 @@
-subdir('gui')
 subdir('mesh')
 subdir('tools')
+subdir('gui')
 
-source_file = [files(['main.cpp',]), mesh_sources,
-              tools_sources]
-source_header = [mesh_headers, tools_headers]
+source_file = files(['main.cpp',])
 
-src_moc_headers = [gui_moc_headers]
-src_ui_files = [gui_ui_files]
+executable('boolean_operator',
+           sources: source_file,
+           dependencies: [boolean_operator_gui_dep],
+           include_directories: includeDir
+          )
