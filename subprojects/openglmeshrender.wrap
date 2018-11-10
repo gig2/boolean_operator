@@ -1,0 +1,4 @@
+[wrap-git]
+directory = openglmeshrender
+url = https://github.com/gig2/OpenGLMeshRender.git
+revision = head

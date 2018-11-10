@@ -15,7 +15,7 @@ class SimpleWindowWithGL : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit SimpleWindowWithGL( QMainWindow *parent = nullptr );
+    explicit SimpleWindowWithGL( QWidget *parent = nullptr );
 
     virtual ~SimpleWindowWithGL();
 

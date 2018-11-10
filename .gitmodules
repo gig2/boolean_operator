@@ -1,0 +1,12 @@
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest
+[submodule "external/openmesh"]
+	path = external/openmesh
+	url = https://github.com/gig2/OpenMesh
+[submodule "external/openglmeshrender"]
+	path = external/openglmeshrender
+	url = https://github.com/gig2/OpenGLMeshRender
+[submodule "external/openglshader"]
+	path = external/openglshader
+	url = https://github.com/gig2/OpenGLShader

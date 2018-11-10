@@ -1,1 +1,5 @@
 subprojects/simple3dengine
+subprojects/openglshader
+subprojects/openglmeshrender
+subprojects/googletest-release-1.8.0
+subprojects/packagecache

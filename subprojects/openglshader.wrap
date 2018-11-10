@@ -1,0 +1,4 @@
+[wrap-git]
+directory = openglshader
+url = https://github.com/gig2/OpenGLShader.git
+revision = head

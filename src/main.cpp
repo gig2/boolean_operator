@@ -1,5 +1,4 @@
 
-#include "gui/simpleWindow.h"
 #include "gui/mainWindow.h"
 
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>

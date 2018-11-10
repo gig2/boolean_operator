@@ -2,8 +2,9 @@
 
 #include <GL/glew.h>
 
-#include "mesh/meshnode.h"
-#include "tools/shader.h"
+#include "OpenGLMeshRender/meshnode.h"
+#include "OpenGLShader/shader.h"
+#include "core/mesh.h"
 
 #include <QOpenGLWidget>
 #include <QWidget>
@@ -16,114 +17,45 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+#include <algorithm>
 #include <chrono>
 #include <string>
 
+template <typename MeshType>
+void resetColors( MeshType &mesh )
+{
+    // set color for mesh
+    std::for_each( mesh.vertices_begin(), mesh.vertices_end(), [&mesh]( auto &vertex ) {
+        typename Mesh::MeshT::Color color{0.25, 0.5, 0.5};
+        mesh.set_color( vertex, color );
+    } );
+}
 
 class MainOpenGLWidget : public QOpenGLWidget
 {
     Q_OBJECT
 public:
-    explicit MainOpenGLWidget( QWidget *parent )
-        : QOpenGLWidget( parent )
-        , bunny_{"bunnyLowPoly.obj"}
-
-    {
-        int major = 3;
-        int minor = 2;
-
-        QSurfaceFormat format;
-
-        format.setDepthBufferSize( 24 );
-        format.setStencilBufferSize( 8 );
-        format.setVersion( major, minor );
-        format.setProfile( QSurfaceFormat::CoreProfile );
-
-        setFormat( format );
-
-        create();
-
-        bunnyTransform_
-            = glm::rotate( bunnyTransform_, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
-    }
+    explicit MainOpenGLWidget( QWidget *parent );
 
 signals:
 
 public slots:
 
 protected:
-    void initializeGL() override
-    {
-        glewExperimental = GL_TRUE;
-        GLenum initGlew{glewInit()};
+    virtual void initializeGL() override;
 
-        if ( initGlew != GLEW_OK )
-        {
-            throw std::runtime_error(
-                reinterpret_cast<const char *>( glewGetErrorString( initGlew ) ) );
-        }
+    virtual void resizeGL( int width, int height ) override;
 
+    virtual void paintGL() override;
 
-        // get them from shader
-        int const positionLocation{0};
-        int const colorLocation{1};
-
-        bunny_.updateVertexBuffer( positionLocation, colorLocation );
-
-        simpleShader_.SetFile( "shader/color.vs", "shader/color.fs", "shader/color.gs" );
-
-
-        modelview_ = glm::lookAt( glm::vec3( -1., -1., 1. ), glm::vec3( 0., 0., 0. ),
-                                  glm::vec3( 0, 0, 1 ) );
-
-        //
-        glClearColor( .0f, 0.f, 0.f, .0f );
-
-        previousTime_ = std::chrono::high_resolution_clock::now();
-    }
-
-    void resizeGL( int width, int height ) override
-    {
-        //
-        float near = 0.01;
-        float far  = 100;
-        float fov  = 70.;
-
-        projection_ = glm::perspective( fov, static_cast<float>( width ) / height, near, far );
-    }
-
-    void paintGL() override
-    {
-        //
-        glClear( GL_COLOR_BUFFER_BIT );
-
-        currentTime_ = std::chrono::high_resolution_clock::now();
-
-        simpleShader_.Enable();
-
-        glm::mat4 mvp = projection_ * modelview_;
-
-        auto mvpLoc = simpleShader_.GetUniformLocation( "MVP" );
-
-        // applyBunny Transforms
-
-        glm::mat4 bunnyMvp = mvp * bunnyTransform_;
-
-        glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( bunnyMvp ) );
-
-        bunny_.draw();
-
-        simpleShader_.Disable();
-
-        previousTime_ = currentTime_;
-    }
 
 
 private:
     std::chrono::high_resolution_clock::time_point previousTime_;
     std::chrono::high_resolution_clock::time_point currentTime_;
 
-    MeshNode bunny_;
+    Mesh bunny_;
+    MeshNode<Mesh> bunnyNode_;
     glm::mat4 bunnyTransform_;
 
 

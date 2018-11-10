@@ -1,9 +1,8 @@
-gui_source_file = files(['simpleWindow.cpp','mainWindow.cpp'])
+gui_source_file = files(['mainWindow.cpp', 'mainopenglwidget.cpp'])
 gui_include_file = files([])
 
-gui_moc_headers = files(['simpleWindow.h',
-                         'mainWindow.h',
-                        'mainopenglwidget.h'])
+gui_moc_headers = files(['mainWindow.h',
+                         'mainopenglwidget.h'])
 
 gui_ui_files = files(['ui/mainWindow.ui'])
 
@@ -19,8 +18,9 @@ boolean_operator_gui_lib = library('boolean_operator_gui',
                                    dependencies: [qt5_widgets_dep,
                                                   qt5_gui_dep,
                                                   qt5_opengl_dep,
-                                                  boolean_operator_tools_dep,
-                                                  boolean_operator_mesh_dep,
+                                                  openglmeshrender_dep,
+                                                  openglshader_dep,
+                                                  boolean_operator_core_dep,
                                                  ],
                                   include_directories: includeDir)
 
@@ -28,6 +28,7 @@ boolean_operator_gui_dep = declare_dependency(link_with: boolean_operator_gui_li
                                    dependencies: [qt5_widgets_dep,
                                                   qt5_gui_dep,
                                                   qt5_opengl_dep,
-                                                  boolean_operator_tools_dep,
-                                                  boolean_operator_mesh_dep,
+                                                  openglmeshrender_dep,
+                                                  openglshader_dep,
+                                                  boolean_operator_core_dep,
                                                  ])

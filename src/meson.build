@@ -1,5 +1,4 @@
-subdir('mesh')
-subdir('tools')
+subdir('core')
 subdir('gui')
 
 source_file = files(['main.cpp',])
