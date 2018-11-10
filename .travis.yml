@@ -1,0 +1,27 @@
+language: cpp
+sudo: required
+dist: xenial
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - sudo apt-get install -qq -y libglew-dev
+  - sudo apt-get install -qq -y build-essential
+  - sudo apt-get install -qq -y clang
+  - sudo apt-get install -qq -y qtbase5-dev
+  - sudo apt-get install -qq -y ninja-build
+  - sudo apt-get install -qq -y libglm-dev
+  - sudo apt-get install -qq -y libqt5opengl5-dev
+  - git clone https://github.com/g-truc/glm glm --branch 0.9.9.3 && cd glm && cmake . -GNinja && ninja && sudo ninja install && cd ..
+
+script:
+  - mkdir build && cd build
+  - cmake .. -DBUILD_APPS=OFF -Dtest=ON -GNinja
+  - ninja
+  - ninja test
+
+branches:
+  only:
+    - /.*/
