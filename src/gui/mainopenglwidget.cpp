@@ -1,7 +1,7 @@
 #include "mainopenglwidget.h"
 
 
-MainOpenGLWidget::MainOpenGLWidget( QWidget *parent )
+MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     : QOpenGLWidget( parent )
     , bunny_{"bunnyLowPoly.obj"}
     , bunnyNode_{bunny_}
@@ -31,8 +31,7 @@ void MainOpenGLWidget::initializeGL()
 
     if ( initGlew != GLEW_OK )
     {
-        throw std::runtime_error(
-            reinterpret_cast<const char *>( glewGetErrorString( initGlew ) ) );
+        throw std::runtime_error( reinterpret_cast<const char*>( glewGetErrorString( initGlew ) ) );
     }
 
 
@@ -42,7 +41,25 @@ void MainOpenGLWidget::initializeGL()
 
     bunnyNode_.updateVertexBuffer( positionLocation, colorLocation );
 
-    simpleShader_.SetFile( "shader/color.vs", "shader/color.fs", "shader/color.gs" );
+    simpleShader_.setVertexShader( "shader/color.vert" );
+    simpleShader_.setFragmentShader( "shader/color.frag" );
+
+    try
+    {
+        simpleShader_.Load();
+    }
+    catch ( std::string const& error )
+    {
+        std::cerr << error << "\n";
+    }
+    catch ( std::exception const& error )
+    {
+        std::cerr << error.what() << "\n";
+    }
+    catch ( ... )
+    {
+        std::cerr << "unknown exception\n";
+    }
 
 
     modelview_

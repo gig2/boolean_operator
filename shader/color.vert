@@ -6,16 +6,14 @@ layout (location = 1)   in  vec3    in_Color;
 
 // uniform
 uniform mat4    MVP;
-// output
-out VertexAttrib
-{
-    vec3    Color;
-}vertex;
+
+out vec4 Color;
+
 void    main()
 {
     // Final position
     gl_Position =   MVP * vec4(in_Vertex,1.0);
     // output
-    vertex.Color = in_Color;
+    Color = vec4(in_Color,1.0);
 }
 
