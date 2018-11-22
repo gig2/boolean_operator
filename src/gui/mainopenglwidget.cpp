@@ -8,7 +8,7 @@ MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
 
 {
     int major = 3;
-    int minor = 2;
+    int minor = 3;
 
     QSurfaceFormat format;
 
