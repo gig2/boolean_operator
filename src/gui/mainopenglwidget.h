@@ -56,7 +56,7 @@ private:
 
     Mesh bunny_;
     MeshNode<Mesh> bunnyNode_;
-    glm::mat4 bunnyTransform_;
+    glm::mat4 bunnyTransform_{1.f};
 
 
     S3DE::Shader simpleShader_;

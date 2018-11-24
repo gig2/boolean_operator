@@ -21,7 +21,7 @@ MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
 
     create();
 
-    bunnyTransform_ = glm::rotate( bunnyTransform_, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
+    bunnyTransform_ = glm::rotate( glm::mat4{1.f}, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
 }
 
 void MainOpenGLWidget::initializeGL()
@@ -66,6 +66,7 @@ void MainOpenGLWidget::initializeGL()
         = glm::lookAt( glm::vec3( -1., -1., 1. ), glm::vec3( 0., 0., 0. ), glm::vec3( 0, 0, 1 ) );
 
     //
+    glEnable( GL_DEPTH_TEST );
     glClearColor( .0f, 0.f, 0.f, .0f );
 
     previousTime_ = std::chrono::high_resolution_clock::now();
@@ -89,7 +90,7 @@ void MainOpenGLWidget::resizeGL( int width, int height )
 void MainOpenGLWidget::paintGL()
 {
     //
-    glClear( GL_COLOR_BUFFER_BIT );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     currentTime_ = std::chrono::high_resolution_clock::now();
 
