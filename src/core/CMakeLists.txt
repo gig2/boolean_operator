@@ -2,7 +2,9 @@ set (core_sources
   mesh.cpp)
 set (core_headers
   bbox.h
-  mesh.h )
+  mesh.h
+  mesh_face_bbox.h)
+
 
 add_library(boolean_operator_core ${core_sources} ${core_headers})
 
