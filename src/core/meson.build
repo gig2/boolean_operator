@@ -1,6 +1,9 @@
 core_sources = files(['mesh.cpp',])
 
-core_headers = files(['mesh.h',])
+core_headers = files(['bbox.h',
+                      'mesh.h',])
+
+core_include_dir = include_directories('./')
 
 
 boolean_operator_core_lib = library('boolean_operator_core',
@@ -8,11 +11,11 @@ boolean_operator_core_lib = library('boolean_operator_core',
                                   core_headers],
 
         dependencies: [ openmesh_dep]
-        , include_directories: [includeDir]
+        , include_directories: [core_include_dir]
                        )
 
 
 boolean_operator_core_dep = declare_dependency(
                               link_with: boolean_operator_core_lib,
                               dependencies: openmesh_dep,
-                              include_directories: [includeDir])
+                              include_directories: [core_include_dir])

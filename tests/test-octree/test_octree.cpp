@@ -19,38 +19,91 @@ using MeshT = OpenMesh::TriMesh_ArrayKernelT<OpenMesh::DefaultTraits>;
 #include <map>
 #include <vector>
 
-
-template <typename PointType>
-class BBox
-{
-public:
-    BBox( PointType lower, PointType upper )
-        : lower_{lower}
-        , upper_{upper}
-    {
-        //
-    }
-
-    PointType const& lower() const { return lower_; }
-
-    PointType const& upper() const { return upper_; }
-
-private:
-    PointType lower_;
-    PointType upper_;
-};
+#include "bbox.h"
 
 
 template <typename MeshType>
-BBox<typename MeshType::Point> bboxFromFace( MeshType const& mesh,
-                                             typename MeshType::FaceHandle fh )
+class MeshFaceAndBBox
 {
-    using Point = typename MeshType::Point;
-    Point lower;
-    Point upper;
+public:
+    using FaceHandle = typename MeshType::FaceHandle;
+    using Point      = typename MeshType::Point;
 
-    return BBox{lower, upper};
-}
+    MeshFaceAndBBox( MeshType& meshView )
+        : mesh{meshView}
+        , faceToBBox{computeFaceToBBox_()}
+        , meshBBox{computeMeshBBox_()}
+    {
+    }
+
+private:
+    std::map<FaceHandle, BBox<Point>> computeFaceToBBox_() const
+    {
+        std::map<FaceHandle, BBox<Point>> faceToBBox;
+
+        for ( auto fhIt = mesh.faces_begin(); fhIt != mesh.faces_end(); ++fhIt )
+        {
+            faceToBBox.emplace( *fhIt, bboxFromFace( mesh, *fhIt ) );
+        }
+        return faceToBBox;
+    }
+
+    BBox<Point> computeMeshBBox_() const
+    {
+        auto minX
+            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.lower()[ 0 ] < rhs.second.lower()[ 0 ]; } );
+
+        auto minY
+            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.lower()[ 1 ] < rhs.second.lower()[ 1 ]; } );
+
+        auto minZ
+            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.lower()[ 2 ] < rhs.second.lower()[ 2 ]; } );
+
+        auto maxX
+            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.upper()[ 0 ] < rhs.second.upper()[ 0 ]; } );
+
+        auto maxY
+            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.upper()[ 1 ] < rhs.second.upper()[ 1 ]; } );
+
+        auto maxZ
+            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
+                                []( auto const& lhs, auto const& rhs ) //
+                                { return lhs.second.upper()[ 2 ] < rhs.second.upper()[ 2 ]; } );
+
+
+        Point lower;
+
+        lower[ 0 ] = minX->second.lower()[ 0 ];
+        lower[ 1 ] = minY->second.lower()[ 1 ];
+        lower[ 2 ] = minZ->second.lower()[ 2 ];
+
+        Point upper;
+
+        upper[ 0 ] = maxX->second.upper()[ 0 ];
+        upper[ 1 ] = maxY->second.upper()[ 1 ];
+        upper[ 2 ] = maxZ->second.upper()[ 2 ];
+
+        return BBox<Point>{lower, upper};
+    }
+
+public:
+    MeshType const& mesh;
+    std::map<FaceHandle, BBox<Point>> const faceToBBox;
+    BBox<Point> const meshBBox;
+};
+
+
+
 
 TEST( bar, doesFoo )
 {
@@ -87,70 +140,10 @@ TEST( bar, doesFoo )
 
     using Point = typename MeshT::Point;
 
-    std::map<FaceHandle, BBox<Point>> mesh1faceToBB;
-    std::map<FaceHandle, BBox<Point>> mesh2faceToBB;
+    auto faceAndBBox1 = MeshFaceAndBBox{mesh1};
+    auto faceAndBBox2 = MeshFaceAndBBox{mesh2};
 
+    auto const& mesh1box = faceAndBBox1.meshBBox;
 
-    for ( auto fhIt = mesh1.faces_begin(); fhIt != mesh1.faces_end(); ++fhIt )
-    {
-        mesh1faceToBB.emplace( *fhIt, bboxFromFace( mesh1, *fhIt ) );
-    }
-
-    for ( auto fhIt = mesh2.faces_begin(); fhIt != mesh2.faces_end(); ++fhIt )
-    {
-        mesh2faceToBB.emplace( *fhIt, bboxFromFace( mesh2, *fhIt ) );
-    }
-
-
-    auto bboxFromBBoxCollections = []( auto const& meshfaceToBB ) {
-        auto minX
-            = std::min_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 0 ] < rhs.second.lower()[ 0 ]; } );
-
-        auto minY
-            = std::min_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 1 ] < rhs.second.lower()[ 1 ]; } );
-
-        auto minZ
-            = std::min_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 2 ] < rhs.second.lower()[ 2 ]; } );
-
-        auto maxX
-            = std::max_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 0 ] < rhs.second.upper()[ 0 ]; } );
-
-        auto maxY
-            = std::max_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 1 ] < rhs.second.upper()[ 1 ]; } );
-
-        auto maxZ
-            = std::max_element( std::begin( meshfaceToBB ), std::end( meshfaceToBB ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 2 ] < rhs.second.upper()[ 2 ]; } );
-
-
-        Point lower;
-
-        lower[ 0 ] = minX->second.lower()[ 0 ];
-        lower[ 1 ] = minY->second.lower()[ 1 ];
-        lower[ 2 ] = minZ->second.lower()[ 2 ];
-
-        Point upper;
-
-        upper[ 0 ] = maxX->second.upper()[ 0 ];
-        upper[ 1 ] = maxY->second.upper()[ 1 ];
-        upper[ 2 ] = maxZ->second.upper()[ 2 ];
-
-        return BBox{lower, upper};
-    };
-
-
-    auto mesh1box = bboxFromBBoxCollections( mesh1faceToBB );
-
-    auto mesh2box = bboxFromBBoxCollections( mesh2faceToBB );
+    auto const& mesh2box = faceAndBBox2.meshBBox;
 }

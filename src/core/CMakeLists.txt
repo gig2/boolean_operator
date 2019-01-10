@@ -1,7 +1,8 @@
 set (core_sources
-     mesh.cpp)
+  mesh.cpp)
 set (core_headers
-     mesh.h )
+  bbox.h
+  mesh.h )
 
 add_library(boolean_operator_core ${core_sources} ${core_headers})
 
