@@ -7,9 +7,12 @@ gui_moc_headers = files(['mainWindow.h',
 gui_ui_files = files(['ui/mainWindow.ui'])
 
 
+
 gui_processed = qt5_mod.preprocess(
   moc_headers: [gui_moc_headers],
   ui_files: [gui_ui_files])
+
+gui_include_dir = include_directories('./')
 
 boolean_operator_gui_lib = library('boolean_operator_gui',
                                    sources: [gui_source_file,
@@ -22,7 +25,7 @@ boolean_operator_gui_lib = library('boolean_operator_gui',
                                                   openglshader_dep,
                                                   boolean_operator_core_dep,
                                                  ],
-                                  include_directories: includeDir)
+                                  include_directories: gui_include_dir)
 
 boolean_operator_gui_dep = declare_dependency(link_with: boolean_operator_gui_lib,
                                    dependencies: [qt5_widgets_dep,
@@ -31,4 +34,5 @@ boolean_operator_gui_dep = declare_dependency(link_with: boolean_operator_gui_li
                                                   openglmeshrender_dep,
                                                   openglshader_dep,
                                                   boolean_operator_core_dep,
-                                                 ])
+                                                 ],
+                                   include_directories: gui_include_dir)
