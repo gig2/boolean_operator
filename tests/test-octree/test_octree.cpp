@@ -70,4 +70,38 @@ TEST( meshFaceAndBBox, computeCorrectBoxes )
     ASSERT_TRUE( intersect( mesh1box, mesh2box ) );
 
     auto intersectionBox = bboxIntersect( mesh1box, mesh2box );
+
+
+    auto computeInAndOut
+        = [&intersectionBox]( auto meshinfirst, auto meshoutfirst, auto const& faceAndBBox ) {
+              auto const& mesh = faceAndBBox.mesh;
+              std::partition_copy( mesh.faces_begin(), mesh.faces_end(), meshinfirst, meshoutfirst,
+                                   [&faceAndBBox, &intersectionBox]( auto const& fh ) //
+                                   {
+                                       auto const& faceToBBox = faceAndBBox.faceToBBox;
+
+                                       auto fIt = faceToBBox.find( fh );
+                                       if ( fIt != std::end( faceToBBox ) )
+                                       {
+                                           return intersect( fIt->second, intersectionBox );
+                                       }
+                                       else
+                                       {
+                                           auto bbox = bboxFromFace( faceAndBBox.mesh, fh );
+                                           return intersect( bbox, intersectionBox );
+                                       }
+                                   } );
+          };
+
+    using FaceHandle = MeshT::FaceHandle;
+
+    std::vector<FaceHandle> mesh1in;
+    std::vector<FaceHandle> mesh1out;
+
+    computeInAndOut( std::back_inserter( mesh1in ), std::back_inserter( mesh1out ), faceAndBBox1 );
+
+    std::vector<FaceHandle> mesh2in;
+    std::vector<FaceHandle> mesh2out;
+
+    computeInAndOut( std::back_inserter( mesh2in ), std::back_inserter( mesh2out ), faceAndBBox2 );
 }
