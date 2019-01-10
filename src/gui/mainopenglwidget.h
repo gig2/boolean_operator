@@ -4,7 +4,7 @@
 
 #include "OpenGLMeshRender/meshnode.h"
 #include "OpenGLShader/shader.h"
-#include "core/mesh.h"
+#include "mesh.h"
 
 #include <QOpenGLWidget>
 #include <QWidget>
