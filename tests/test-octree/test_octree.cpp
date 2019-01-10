@@ -50,48 +50,25 @@ private:
 
     BBox<Point> computeMeshBBox_() const
     {
-        auto minX
-            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 0 ] < rhs.second.lower()[ 0 ]; } );
-
-        auto minY
-            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 1 ] < rhs.second.lower()[ 1 ]; } );
-
-        auto minZ
-            = std::min_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.lower()[ 2 ] < rhs.second.lower()[ 2 ]; } );
-
-        auto maxX
-            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 0 ] < rhs.second.upper()[ 0 ]; } );
-
-        auto maxY
-            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 1 ] < rhs.second.upper()[ 1 ]; } );
-
-        auto maxZ
-            = std::max_element( std::begin( faceToBBox ), std::end( faceToBBox ),
-                                []( auto const& lhs, auto const& rhs ) //
-                                { return lhs.second.upper()[ 2 ] < rhs.second.upper()[ 2 ]; } );
-
-
         Point lower;
-
-        lower[ 0 ] = minX->second.lower()[ 0 ];
-        lower[ 1 ] = minY->second.lower()[ 1 ];
-        lower[ 2 ] = minZ->second.lower()[ 2 ];
-
         Point upper;
 
-        upper[ 0 ] = maxX->second.upper()[ 0 ];
-        upper[ 1 ] = maxY->second.upper()[ 1 ];
-        upper[ 2 ] = maxZ->second.upper()[ 2 ];
+        for ( int iDir = 0; iDir < 3; ++iDir )
+        {
+            auto min = std::min_element(
+                std::begin( faceToBBox ), std::end( faceToBBox ),
+                [&iDir]( auto const& lhs, auto const& rhs ) //
+                { return lhs.second.lower()[ iDir ] < rhs.second.lower()[ iDir ]; } );
+
+            auto max = std::max_element(
+                std::begin( faceToBBox ), std::end( faceToBBox ),
+                [&iDir]( auto const& lhs, auto const& rhs ) //
+                { return lhs.second.upper()[ iDir ] < rhs.second.upper()[ iDir ]; } );
+
+            lower[ iDir ] = min->second.lower()[ iDir ];
+            upper[ iDir ] = max->second.upper()[ iDir ];
+        }
+
 
         return BBox<Point>{lower, upper};
     }
@@ -136,6 +113,9 @@ TEST( bar, doesFoo )
 
     mesh2.add_face( faceVhandles );
 
+
+
+
     using FaceHandle = typename MeshT::FaceHandle;
 
     using Point = typename MeshT::Point;
@@ -146,4 +126,17 @@ TEST( bar, doesFoo )
     auto const& mesh1box = faceAndBBox1.meshBBox;
 
     auto const& mesh2box = faceAndBBox2.meshBBox;
+
+    EXPECT_DOUBLE_EQ( 0., mesh1box.lower()[ 0 ] );
+    EXPECT_DOUBLE_EQ( 0., mesh1box.lower()[ 1 ] );
+    EXPECT_DOUBLE_EQ( 0., mesh1box.lower()[ 2 ] );
+
+    EXPECT_DOUBLE_EQ( 4., mesh1box.upper()[ 0 ] );
+    EXPECT_DOUBLE_EQ( 6., mesh1box.upper()[ 1 ] );
+    EXPECT_DOUBLE_EQ( 0., mesh1box.upper()[ 2 ] );
+
+
+    ASSERT_TRUE( intersect( mesh1box, mesh2box ) );
+
+    auto intersectionBox = bboxIntersect( mesh1box, mesh2box );
 }
