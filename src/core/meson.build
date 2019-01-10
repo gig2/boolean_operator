@@ -1,7 +1,8 @@
 core_sources = files(['mesh.cpp',])
 
 core_headers = files(['bbox.h',
-                      'mesh.h',])
+                      'mesh.h',
+                      'mesh_face_bbox.h'])
 
 core_include_dir = include_directories('./')
 

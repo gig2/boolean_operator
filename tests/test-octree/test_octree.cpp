@@ -1,3 +1,5 @@
+#include "bbox.h"
+#include "mesh_face_bbox.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -7,6 +9,7 @@
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 
 
+#include <algorithm>
 
 using testing::Eq;
 using testing::FloatEq;
@@ -14,75 +17,9 @@ using testing::FloatEq;
 using MeshT = OpenMesh::TriMesh_ArrayKernelT<OpenMesh::DefaultTraits>;
 
 
-#include <algorithm>
-#include <array>
-#include <map>
-#include <vector>
-
-#include "bbox.h"
 
 
-template <typename MeshType>
-class MeshFaceAndBBox
-{
-public:
-    using FaceHandle = typename MeshType::FaceHandle;
-    using Point      = typename MeshType::Point;
-
-    MeshFaceAndBBox( MeshType& meshView )
-        : mesh{meshView}
-        , faceToBBox{computeFaceToBBox_()}
-        , meshBBox{computeMeshBBox_()}
-    {
-    }
-
-private:
-    std::map<FaceHandle, BBox<Point>> computeFaceToBBox_() const
-    {
-        std::map<FaceHandle, BBox<Point>> faceToBBox;
-
-        for ( auto fhIt = mesh.faces_begin(); fhIt != mesh.faces_end(); ++fhIt )
-        {
-            faceToBBox.emplace( *fhIt, bboxFromFace( mesh, *fhIt ) );
-        }
-        return faceToBBox;
-    }
-
-    BBox<Point> computeMeshBBox_() const
-    {
-        Point lower;
-        Point upper;
-
-        for ( int iDir = 0; iDir < 3; ++iDir )
-        {
-            auto min = std::min_element(
-                std::begin( faceToBBox ), std::end( faceToBBox ),
-                [&iDir]( auto const& lhs, auto const& rhs ) //
-                { return lhs.second.lower()[ iDir ] < rhs.second.lower()[ iDir ]; } );
-
-            auto max = std::max_element(
-                std::begin( faceToBBox ), std::end( faceToBBox ),
-                [&iDir]( auto const& lhs, auto const& rhs ) //
-                { return lhs.second.upper()[ iDir ] < rhs.second.upper()[ iDir ]; } );
-
-            lower[ iDir ] = min->second.lower()[ iDir ];
-            upper[ iDir ] = max->second.upper()[ iDir ];
-        }
-
-
-        return BBox<Point>{lower, upper};
-    }
-
-public:
-    MeshType const& mesh;
-    std::map<FaceHandle, BBox<Point>> const faceToBBox;
-    BBox<Point> const meshBBox;
-};
-
-
-
-
-TEST( bar, doesFoo )
+TEST( meshFaceAndBBox, computeCorrectBoxes )
 {
     //
 
@@ -113,12 +50,6 @@ TEST( bar, doesFoo )
 
     mesh2.add_face( faceVhandles );
 
-
-
-
-    using FaceHandle = typename MeshT::FaceHandle;
-
-    using Point = typename MeshT::Point;
 
     auto faceAndBBox1 = MeshFaceAndBBox{mesh1};
     auto faceAndBBox2 = MeshFaceAndBBox{mesh2};
