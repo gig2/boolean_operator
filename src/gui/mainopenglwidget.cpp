@@ -1,10 +1,81 @@
 #include "mainopenglwidget.h"
 
+Mesh::MeshT constructCube()
+{
+    Mesh::MeshT mesh;
+
+    // let's generate a cube
+    using Point        = typename Mesh::MeshT::Point;
+    using VertexHandle = typename Mesh::MeshT::VertexHandle;
+
+    std::array<VertexHandle, 8> vhandle;
+
+    vhandle[ 0 ] = mesh.add_vertex( 0.15 * Point{-1, -1, 1} );
+    vhandle[ 1 ] = mesh.add_vertex( 0.15 * Point{1, -1, 1} );
+    vhandle[ 2 ] = mesh.add_vertex( 0.15 * Point{1, 1, 1} );
+    vhandle[ 3 ] = mesh.add_vertex( 0.15 * Point{-1, 1, 1} );
+    vhandle[ 4 ] = mesh.add_vertex( 0.15 * Point{-1, -1, -1} );
+    vhandle[ 5 ] = mesh.add_vertex( 0.15 * Point{1, -1, -1} );
+    vhandle[ 6 ] = mesh.add_vertex( 0.15 * Point{1, 1, -1} );
+    vhandle[ 7 ] = mesh.add_vertex( 0.15 * Point{-1, 1, -1} );
+
+    std::vector<VertexHandle> faceVhandles;
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 0 ] );
+    faceVhandles.push_back( vhandle[ 1 ] );
+    faceVhandles.push_back( vhandle[ 2 ] );
+    faceVhandles.push_back( vhandle[ 3 ] );
+    mesh.add_face( faceVhandles );
+
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 7 ] );
+    faceVhandles.push_back( vhandle[ 6 ] );
+    faceVhandles.push_back( vhandle[ 5 ] );
+    faceVhandles.push_back( vhandle[ 4 ] );
+    mesh.add_face( faceVhandles );
+
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 1 ] );
+    faceVhandles.push_back( vhandle[ 0 ] );
+    faceVhandles.push_back( vhandle[ 4 ] );
+    faceVhandles.push_back( vhandle[ 5 ] );
+    mesh.add_face( faceVhandles );
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 2 ] );
+    faceVhandles.push_back( vhandle[ 1 ] );
+    faceVhandles.push_back( vhandle[ 5 ] );
+    faceVhandles.push_back( vhandle[ 6 ] );
+    mesh.add_face( faceVhandles );
+
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 3 ] );
+    faceVhandles.push_back( vhandle[ 2 ] );
+    faceVhandles.push_back( vhandle[ 6 ] );
+    faceVhandles.push_back( vhandle[ 7 ] );
+    mesh.add_face( faceVhandles );
+
+
+    faceVhandles.clear();
+    faceVhandles.push_back( vhandle[ 0 ] );
+    faceVhandles.push_back( vhandle[ 3 ] );
+    faceVhandles.push_back( vhandle[ 7 ] );
+    faceVhandles.push_back( vhandle[ 4 ] );
+    mesh.add_face( faceVhandles );
+
+    return mesh;
+}
 
 MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     : QOpenGLWidget( parent )
     , bunny_{"bunnyLowPoly.obj"}
     , bunnyNode_{bunny_}
+    , otherMesh_{}
+    , otherMeshNode_{otherMesh_}
 
 {
     int major = 3;
@@ -22,6 +93,8 @@ MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     create();
 
     bunnyTransform_ = glm::rotate( glm::mat4{1.f}, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
+
+    otherMeshTransform_ = glm::translate( glm::mat4{1.f}, glm::vec3{2., 0., 0.} );
 }
 
 void MainOpenGLWidget::initializeGL()
@@ -75,6 +148,22 @@ void MainOpenGLWidget::initializeGL()
 
     bunny_.refreshBuffer();
     bunnyNode_.updateVertexBuffer();
+
+    // HERE we create the mesh
+    auto& openmesh = otherMesh_.mesh;
+
+    openmesh = constructCube();
+    // createMyMesh(openmesh);
+    // create all the needed element
+    // when finish
+    // update otherMesh_ vertex tables, color tables
+
+
+    // set a colors
+    resetColors( openmesh );
+
+    otherMesh_.refreshBuffer();
+    otherMeshNode_.updateVertexBuffer();
 }
 
 void MainOpenGLWidget::resizeGL( int width, int height )
@@ -107,6 +196,12 @@ void MainOpenGLWidget::paintGL()
     glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( bunnyMvp ) );
 
     bunnyNode_.draw();
+
+    glm::mat4 transform = mvp * otherMeshTransform_;
+
+    glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( transform ) );
+
+    otherMeshNode_.draw();
 
     simpleShader_.Disable();
 
