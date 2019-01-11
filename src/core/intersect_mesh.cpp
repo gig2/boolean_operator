@@ -28,6 +28,106 @@ IntersectMesh::IntersectMesh( MeshT& mesh01, MeshT& mesh02 )
     initCheckAttribute( mesh2 );
 }
 
+
+
+void IntersectMesh::genere_boucle1( MeshT::FaceHandle fh1, int indice,
+                                    std::vector<MeshT::FaceHandle>& boucle )
+{
+    MeshT::FaceHalfedgeIter he_it;
+    MeshT::FaceHandle fh2;
+    MeshT::HalfedgeHandle ohe_h;
+
+    mesh1.property( is_checked, fh1 ) = indice;
+    boucle.push_back( fh1 );
+
+    if ( intersection1.size() > 0 )
+    {
+        auto it = std::find( intersection1.begin(), intersection1.end(),
+                             fh1 ); // Suppression de la face courante de la liste
+        swap( *it, intersection1.back() );
+        intersection1.pop_back();
+
+        he_it = mesh1.fh_iter( fh1 );
+
+        for ( int i = 0; i < 3; i++ ) // Pour chaque face voisine
+        {
+            ohe_h = mesh1.opposite_halfedge_handle( *he_it );
+            fh2   = mesh1.face_handle( ohe_h ); // Face voisine
+
+            if ( mesh1.property( is_checked, fh2 )
+                 == 1 ) // Intersecte, mais n'a pas encore été associé à une boucle
+            {
+                genere_boucle1( fh2, indice, boucle );
+            }
+            he_it++;
+        }
+    }
+}
+
+void IntersectMesh::genere_boucle2( MeshT::FaceHandle fh1, int indice,
+                                    std::vector<MeshT::FaceHandle>& boucle )
+{
+    MeshT::FaceHalfedgeIter he_it;
+    MeshT::FaceHandle fh2;
+    MeshT::HalfedgeHandle ohe_h;
+
+    mesh2.property( is_checked, fh1 ) = indice;
+    boucle.push_back( fh1 );
+
+    if ( intersection2.size() > 0 )
+    {
+        auto it = std::find( intersection2.begin(), intersection2.end(),
+                             fh1 ); // Suppression de la face courante de la liste
+        swap( *it, intersection2.back() );
+        intersection2.pop_back();
+
+        he_it = mesh2.fh_iter( fh1 );
+
+        for ( int i = 0; i < 3; i++ ) // Pour chaque face voisine
+        {
+            ohe_h = mesh2.opposite_halfedge_handle( *he_it );
+            fh2   = mesh2.face_handle( ohe_h ); // Face voisine
+
+            if ( mesh2.property( is_checked, fh2 )
+                 == 1 ) // Intersecte, mais n'a pas encore été associé à une boucle
+            {
+                genere_boucle1( fh2, indice, boucle );
+            }
+            he_it++;
+        }
+    }
+}
+
+void IntersectMesh::genere_boucles()
+{
+    int indice = 2;
+    std::vector<MeshT::FaceHandle> boucle;
+
+    while ( intersection1.size() > 0 )
+    {
+        boucle.clear();
+        genere_boucle1( intersection1[ 0 ], indice,
+                        boucle ); // On passe à la boucle suivante
+        boucles1.push_back( boucle );
+
+        indice++; // Si toutes les faces voisines sont traitées
+    }
+
+    indice = 2;
+
+    while ( intersection2.size() > 0 )
+    {
+        boucle.clear();
+        genere_boucle2( intersection2[ 0 ], indice,
+                        boucle ); // On passe à la boucle suivante
+        boucles2.push_back( boucle );
+
+        indice++; // Si toutes les faces voisines sont traitées
+    }
+}
+
+
+
 void IntersectMesh::operator()( std::vector<FaceHandle> const& mesh1in,
                                 std::vector<FaceHandle> const& mesh2in )
 {
@@ -53,6 +153,24 @@ void IntersectMesh::operator()( std::vector<FaceHandle> const& mesh1in,
 
     colorIntersect( mesh1 );
     colorIntersect( mesh2 );
+
+    genere_boucles();
+
+    for ( int i = 0; i < boucles1.size(); ++i )
+    {
+        for ( int j = 0; j < boucles1[ i ].size(); ++j )
+        {
+            std::cout << "(" << i << " , " << j << ") = " << boucles1[ i ][ j ] << "\n";
+        }
+    }
+    std::cout << "\n";
+    for ( int i = 0; i < boucles2.size(); ++i )
+    {
+        for ( int j = 0; j < boucles2[ i ].size(); ++j )
+        {
+            std::cout << "(" << i << " , " << j << ") = " << boucles2[ i ][ j ] << "\n";
+        }
+    }
 }
 #if 0
 test_mesh::test_mesh()

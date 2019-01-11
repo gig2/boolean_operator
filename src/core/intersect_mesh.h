@@ -43,4 +43,12 @@ public:
 
     // Genere les boucles
     void genere_boucles( MeshT::FaceHandle, int );
+
+    void genere_boucles();
+
+    void genere_boucle2( MeshT::FaceHandle fh1, int indice,
+                         std::vector<MeshT::FaceHandle> &boucle );
+
+    void genere_boucle1( MeshT::FaceHandle fh1, int indice,
+                         std::vector<MeshT::FaceHandle> &boucle );
 };
