@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1107</width>
+    <width>1143</width>
     <height>740</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>0</y>
       <width>781</width>
-      <height>561</height>
+      <height>631</height>
      </rect>
     </property>
    </widget>
@@ -37,13 +37,146 @@
      <string>compute Octree</string>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>100</y>
+      <width>291</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Camera</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>271</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0">
+       <widget class="QDoubleSpinBox" name="camPosY">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QDoubleSpinBox" name="camTarX">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>target X</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QDoubleSpinBox" name="camPosX">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QDoubleSpinBox" name="camPosZ">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>cam posY</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>cam posZ</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>cam posX</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QDoubleSpinBox" name="camTarY">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>target Y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QDoubleSpinBox" name="camTarZ">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>target Z</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>350</y>
+      <width>341</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Other mesh position</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>29</y>
+       <width>321</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2"/>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1107</width>
+     <width>1143</width>
      <height>20</height>
     </rect>
    </property>
@@ -84,6 +217,20 @@
     <slot>loadReferenceMesh(QString)</slot>
     <slot>loadOtherMesh(QString)</slot>
     <slot>computeOctree()</slot>
+    <slot>camX(double)</slot>
+    <slot>camY(double)</slot>
+    <slot>camZ(double)</slot>
+    <slot>tarX(double)</slot>
+    <slot>tarY(double)</slot>
+    <slot>tarZ(double)</slot>
+    <slot>eulerX(double)</slot>
+    <slot>eulerY(double)</slot>
+    <slot>eulerZ(double)</slot>
+    <slot>eulerAngle(double)</slot>
+    <slot>posX(double)</slot>
+    <slot>posY(double)</slot>
+    <slot>posZ(double)</slot>
+    <slot>refreshTransformation()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -178,6 +325,86 @@
     <hint type="sourcelabel">
      <x>880</x>
      <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camPosX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>camX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camPosY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>camY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camPosZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>camZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camTarX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>tarX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>250</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camTarY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>tarZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>876</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel">
      <x>400</x>

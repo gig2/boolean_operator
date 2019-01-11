@@ -67,6 +67,25 @@ public slots:
 
     void computeOctree();
 
+    void camX( double );
+    void camY( double );
+    void camZ( double );
+
+    void tarX( double );
+    void tarY( double );
+    void tarZ( double );
+
+    void eulerX( double );
+    void eulerY( double );
+    void eulerZ( double );
+
+    void posX( double );
+    void posY( double );
+    void posZ( double );
+
+    void refreshTransformation();
+
+
 protected:
     virtual void initializeGL() override;
 
@@ -93,9 +112,18 @@ private:
 
     std::unique_ptr<IntersectMesh> intersectMesh_;
 
+    glm::vec3 camPos_{1., 1., 1.};
+    glm::vec3 camTar_{0., 0., 0.};
+
 
     S3DE::Shader simpleShader_;
 
     glm::mat4 projection_;
     glm::mat4 modelview_;
+
+
+    glm::vec3 eulerAxis_{1.0, 0.0, 0.0};
+    double eulerAngle_{0.};
+
+    glm::vec3 translate_{1.0, 0.0, 0.0};
 };
