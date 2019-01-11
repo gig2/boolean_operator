@@ -11,7 +11,7 @@ public:
     using FaceHandle = typename MeshType::FaceHandle;
     using Point      = typename MeshType::Point;
 
-    MeshFaceAndBBox( MeshType& meshView )
+    explicit MeshFaceAndBBox( MeshType const& meshView )
         : mesh{meshView}
         , faceToBBox{computeFaceToBBox_()}
         , meshBBox{computeMeshBBox_()}

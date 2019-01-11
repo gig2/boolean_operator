@@ -2,6 +2,8 @@ set (core_sources
   mesh.cpp)
 set (core_headers
   bbox.h
+  compute_octree.h
+  octree.h
   mesh.h
   mesh_face_bbox.h)
 
