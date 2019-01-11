@@ -103,6 +103,9 @@ BBox<PointType> bboxExtendUnion( BBox<PointType> const& lhs, BBox<PointType> con
     PointType lower;
     PointType upper;
 
+    if ( !lhs.isValid() || !rhs.isValid() )
+        return BBox<PointType>{};
+
     for ( int iDir = 0; iDir < 3; ++iDir )
     {
         lower[ iDir ] = std::min( lhs.lower()[ iDir ], rhs.lower()[ iDir ] );

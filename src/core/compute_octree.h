@@ -50,6 +50,11 @@ private:
         auto const& mesh1box = faceAndBBox1.meshBBox;
         auto const& mesh2box = faceAndBBox2.meshBBox;
 
+        if ( !intersect( mesh1box, mesh2box ) )
+        {
+            throw std::runtime_error( "Imbricated meshes not supported" );
+        }
+
         auto intersectionBox = bboxIntersect( mesh1box, mesh2box );
 
 
@@ -115,6 +120,10 @@ private:
                             return lhsIt->second.upper()[ iDir ] < rhsIt->second.upper()[ iDir ];
                         } );
 
+                    if ( lowerIt == meshinLast || upperIt == meshinLast )
+                    {
+                        return BBox<PointType>{};
+                    }
                     auto lowerFaceToBBoxIt = faceToBBox.find( *lowerIt );
                     auto upperFaceToBBoxIt = faceToBBox.find( *upperIt );
 
