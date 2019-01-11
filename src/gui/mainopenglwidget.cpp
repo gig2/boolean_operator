@@ -70,6 +70,28 @@ Mesh::MeshT constructCube()
     return mesh;
 }
 
+
+
+template <typename MeshType>
+void applyTransform( MeshType& openmesh, glm::mat4 otherMeshTransform )
+{
+    std::for_each( openmesh.vertices_begin(), openmesh.vertices_end(),
+                   [&openmesh, otherMeshTransform]( auto const& vh ) //
+                   {
+                       auto point = openmesh.point( vh );
+                       glm::vec4 vpoint{point[ 0 ], point[ 1 ], point[ 2 ], 1.};
+
+                       vpoint = otherMeshTransform * vpoint;
+
+                       for ( int iDir = 0; iDir < 3; ++iDir )
+                       {
+                           point[ iDir ] = vpoint[ iDir ];
+                       }
+
+                       openmesh.set_point( vh, point );
+                   } );
+}
+
 MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     : QOpenGLWidget( parent )
     , bunny_{"bunnyLowPoly.obj"}
@@ -163,6 +185,8 @@ void MainOpenGLWidget::initializeGL()
     // set a colors
     resetColors( openmesh );
 
+    applyTransform( openmesh, otherMeshTransform_ );
+#if 0
     std::for_each( openmesh.vertices_begin(), openmesh.vertices_end(),
                    [&openmesh, this]( auto const& vh ) //
                    {
@@ -178,6 +202,7 @@ void MainOpenGLWidget::initializeGL()
 
                        openmesh.set_point( vh, point );
                    } );
+#endif
 
     otherMesh_.refreshBuffer();
     otherMeshNode_.updateVertexBuffer();
@@ -218,4 +243,47 @@ void MainOpenGLWidget::paintGL()
     simpleShader_.Disable();
 
     previousTime_ = currentTime_;
+}
+
+void MainOpenGLWidget::loadReferenceMesh( QString filename )
+{
+    bunny_.load( filename.toStdString() );
+
+
+    resetColors( bunny_.mesh );
+
+    bunny_.refreshBuffer();
+
+
+    makeCurrent();
+    bunnyNode_.updateVertexBuffer();
+    doneCurrent();
+
+    update();
+}
+
+void MainOpenGLWidget::loadOtherMesh( QString filename )
+{
+    otherMesh_.load( filename.toStdString() );
+
+    resetColors( otherMesh_.mesh );
+
+    otherMeshOrig_ = otherMesh_.mesh;
+
+    applyTransform( otherMesh_.mesh, otherMeshTransform_ );
+
+    otherMesh_.refreshBuffer();
+
+    makeCurrent();
+    otherMeshNode_.updateVertexBuffer();
+    doneCurrent();
+
+    update();
+}
+
+void MainOpenGLWidget::computeOctree()
+{
+    computeOctree_ = std::make_unique<ComputeOctree<Mesh::MeshT>>( bunny_.mesh, otherMesh_.mesh );
+
+    update();
 }

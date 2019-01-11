@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1015</width>
-    <height>600</height>
+    <width>1107</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,26 +24,172 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="octreeCompute">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>60</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>compute Octree</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1015</width>
+     <width>1107</width>
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Fi&amp;le</string>
+    </property>
+    <addaction name="actionLoad_reference"/>
+    <addaction name="actionLoad_other_mesh"/>
+    <addaction name="separator"/>
+    <addaction name="actionquit"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLoad_reference">
+   <property name="text">
+    <string>Load reference</string>
+   </property>
+  </action>
+  <action name="actionLoad_other_mesh">
+   <property name="text">
+    <string>Load other mesh</string>
+   </property>
+  </action>
+  <action name="actionquit">
+   <property name="text">
+    <string>quit</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>MainOpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>mainopenglwidget.h</header>
+   <slots>
+    <slot>loadReferenceMesh(QString)</slot>
+    <slot>loadOtherMesh(QString)</slot>
+    <slot>computeOctree()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionquit</sender>
+   <signal>triggered()</signal>
+   <receiver>SimpleWindowWithGL</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>553</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoad_reference</sender>
+   <signal>triggered()</signal>
+   <receiver>SimpleWindowWithGL</receiver>
+   <slot>requestLoadingReferenceModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>553</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoad_other_mesh</sender>
+   <signal>triggered()</signal>
+   <receiver>SimpleWindowWithGL</receiver>
+   <slot>requestLoadingOtherMeshModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>553</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SimpleWindowWithGL</sender>
+   <signal>referenceModelToLoad(QString)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>loadReferenceMesh(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>553</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SimpleWindowWithGL</sender>
+   <signal>otherMeshToLoad(QString)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>loadOtherMesh(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>553</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>octreeCompute</sender>
+   <signal>clicked()</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>computeOctree()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>880</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>referenceModelToLoad(QString)</signal>
+  <signal>otherMeshToLoad(QString)</signal>
+  <slot>requestLoadingReferenceModel()</slot>
+  <slot>requestLoadingOtherMeshModel()</slot>
+ </slots>
 </ui>
