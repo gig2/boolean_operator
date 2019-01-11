@@ -163,6 +163,22 @@ void MainOpenGLWidget::initializeGL()
     // set a colors
     resetColors( openmesh );
 
+    std::for_each( openmesh.vertices_begin(), openmesh.vertices_end(),
+                   [&openmesh, this]( auto const& vh ) //
+                   {
+                       auto point = openmesh.point( vh );
+                       glm::vec4 vpoint{point[ 0 ], point[ 1 ], point[ 2 ], 1.};
+
+                       vpoint = otherMeshTransform_ * vpoint;
+
+                       for ( int iDir = 0; iDir < 3; ++iDir )
+                       {
+                           point[ iDir ] = vpoint[ iDir ];
+                       }
+
+                       openmesh.set_point( vh, point );
+                   } );
+
     otherMesh_.refreshBuffer();
     otherMeshNode_.updateVertexBuffer();
 
@@ -194,13 +210,13 @@ void MainOpenGLWidget::paintGL()
 
     // applyBunny Transforms
 
-    glm::mat4 bunnyMvp = mvp * bunnyTransform_;
+    glm::mat4 bunnyMvp = mvp;
 
     glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( bunnyMvp ) );
 
     bunnyNode_.draw();
 
-    glm::mat4 transform = mvp * otherMeshTransform_;
+    glm::mat4 transform = mvp;
 
     glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( transform ) );
 
