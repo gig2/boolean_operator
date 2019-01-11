@@ -1,5 +1,7 @@
 #include "mainopenglwidget.h"
 
+#include <glm/gtx/euler_angles.hpp>
+
 Mesh::MeshT constructCube()
 {
     Mesh::MeshT mesh;
@@ -406,12 +408,13 @@ void MainOpenGLWidget::posZ( double value )
 
 void MainOpenGLWidget::refreshTransformation()
 {
-    glm::mat4 eulerTransform = glm::eulerAngleXYZ( eulerAngle, eulerAxis );
-    glm::mat4 translation    = glm::translate( glm::mat4{1.f}, translate_ );
+    glm::mat4 eulerTransform
+        = glm::eulerAngleXYZ( eulerAxis_[ 0 ], eulerAxis_[ 1 ], eulerAxis_[ 2 ] );
+    glm::mat4 translation = glm::translate( glm::mat4{1.f}, translate_ );
 
     otherMeshTransform_ = translation * eulerTransform;
-    otherMeshNode_.mesh = otherMeshOrig_;
-    applyTransform( otherMeshNode_.mesh, otherMeshTransform_ );
+    otherMesh_.mesh     = otherMeshOrig_;
+    applyTransform( otherMesh_.mesh, otherMeshTransform_ );
 
     otherMesh_.refreshBuffer();
     makeCurrent();
