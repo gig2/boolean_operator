@@ -1,5 +1,6 @@
 #include "mainopenglwidget.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 
 Mesh::MeshT constructCube()
