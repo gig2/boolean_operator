@@ -92,9 +92,10 @@ MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
 
     create();
 
-    bunnyTransform_ = glm::rotate( glm::mat4{1.f}, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
+    bunnyTransform_ = glm::mat4{
+        1.f}; // glm::rotate( glm::mat4{1.f}, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
 
-    otherMeshTransform_ = glm::translate( glm::mat4{1.f}, glm::vec3{2., 0., 0.} );
+    otherMeshTransform_ = glm::translate( glm::mat4{1.f}, glm::vec3{.4, 0., 0.} );
 }
 
 void MainOpenGLWidget::initializeGL()
@@ -136,7 +137,7 @@ void MainOpenGLWidget::initializeGL()
 
 
     modelview_
-        = glm::lookAt( glm::vec3( -1., -1., 1. ), glm::vec3( 0., 0., 0. ), glm::vec3( 0, 0, 1 ) );
+        = glm::lookAt( glm::vec3( -1., 1., 1. ), glm::vec3( 0., 0., 0. ), glm::vec3( 0, 1, 0 ) );
 
     //
     glEnable( GL_DEPTH_TEST );
@@ -164,6 +165,8 @@ void MainOpenGLWidget::initializeGL()
 
     otherMesh_.refreshBuffer();
     otherMeshNode_.updateVertexBuffer();
+
+    computeOctree_ = std::make_unique<ComputeOctree<Mesh::MeshT>>( bunny_.mesh, otherMesh_.mesh );
 }
 
 void MainOpenGLWidget::resizeGL( int width, int height )

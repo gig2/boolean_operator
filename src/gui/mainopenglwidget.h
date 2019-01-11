@@ -4,6 +4,7 @@
 
 #include "OpenGLMeshRender/meshnode.h"
 #include "OpenGLShader/shader.h"
+#include "compute_octree.h"
 #include "mesh.h"
 
 #include <QOpenGLWidget>
@@ -80,6 +81,8 @@ private:
     Mesh otherMesh_;
     MeshNode<Mesh> otherMeshNode_;
     glm::mat4 otherMeshTransform_{1.f};
+
+    std::unique_ptr<ComputeOctree<Mesh::MeshT>> computeOctree_;
 
 
     S3DE::Shader simpleShader_;

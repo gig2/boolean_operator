@@ -1,6 +1,8 @@
 core_sources = files(['mesh.cpp',])
 
 core_headers = files(['bbox.h',
+                      'compute_octree.h',
+                      'octree.h',
                       'mesh.h',
                       'mesh_face_bbox.h'])
 
