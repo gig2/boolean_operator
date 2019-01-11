@@ -79,15 +79,13 @@ private:
     std::chrono::high_resolution_clock::time_point previousTime_;
     std::chrono::high_resolution_clock::time_point currentTime_;
 
-    Mesh bunny_;
-    MeshNode<Mesh> bunnyNode_;
-    glm::mat4 bunnyTransform_{1.f};
+    Mesh referenceMesh_;
+    MeshNode<Mesh> referenceMeshNode_;
 
     Mesh otherMesh_;
     MeshNode<Mesh> otherMeshNode_;
     Mesh::MeshT otherMeshOrig_;
     glm::mat4 otherMeshTransform_{1.f};
-    std::string otherMeshName_;
 
 
     std::unique_ptr<ComputeOctree<Mesh::MeshT>> computeOctree_;

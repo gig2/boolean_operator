@@ -20,13 +20,13 @@ public:
         , mesh2{mesh2}
         , faceAndBBox1{mesh1}
         , faceAndBBox2{mesh2}
-        , octree{initOctree_()}
+        , octree_{initOctree_()}
 
     {
         //
     }
 
-private:
+
     MeshType const& mesh1;
     MeshType const& mesh2;
 
@@ -39,10 +39,13 @@ private:
     std::vector<FaceHandle> mesh2in;
     std::vector<FaceHandle> mesh2out;
 
-    Octree<PointType, decltype( mesh1in ), decltype( faceAndBBox1 )> octree;
+    auto const& octree() const { return octree_; }
+
+private:
+    Octree<PointType, decltype( mesh1in ), decltype( faceAndBBox1 )> octree_;
 
 
-    decltype( octree ) initOctree_()
+    decltype( octree_ ) initOctree_()
     {
         auto const& mesh1box = faceAndBBox1.meshBBox;
         auto const& mesh2box = faceAndBBox2.meshBBox;
