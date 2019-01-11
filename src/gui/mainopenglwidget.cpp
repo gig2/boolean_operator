@@ -266,8 +266,16 @@ void MainOpenGLWidget::loadOtherMesh( QString filename )
 
 void MainOpenGLWidget::computeOctree()
 {
-    computeOctree_
-        = std::make_unique<ComputeOctree<Mesh::MeshT>>( referenceMesh_.mesh, otherMesh_.mesh );
+    try
+    {
+        computeOctree_
+            = std::make_unique<ComputeOctree<Mesh::MeshT>>( referenceMesh_.mesh, otherMesh_.mesh );
+    }
+    catch ( std::exception const& e )
+    {
+        std::cerr << e.what() << "\n";
+        computeOctree_ = nullptr;
+    }
 
     update();
 }
