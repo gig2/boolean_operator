@@ -1,10 +1,13 @@
-core_sources = files(['mesh.cpp',])
+core_sources = files(['intersect_mesh.cpp',
+                      'mesh.cpp',])
 
 core_headers = files(['bbox.h',
                       'compute_octree.h',
-                      'octree.h',
+                      'intersect_mesh.h',
                       'mesh.h',
-                      'mesh_face_bbox.h'])
+                      'mesh_face_bbox.h',
+                      'octree.h',
+                      ])
 
 core_include_dir = include_directories('./')
 

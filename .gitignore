@@ -3,3 +3,7 @@ subprojects/openglshader
 subprojects/openglmeshrender
 subprojects/googletest-release-1.8.0
 subprojects/packagecache
+build
+CMakeCache.txt
+CMakeFiles
+CMakeLists.txt.user
