@@ -91,10 +91,22 @@ BBox<PointType> bboxIntersect( BBox<PointType> const& lhs, BBox<PointType> const
     for ( int iDir = 0; iDir < 3; ++iDir )
     {
         lower[ iDir ] = std::max( lhs.lower()[ iDir ], rhs.lower()[ iDir ] );
+        upper[ iDir ] = std::min( lhs.upper()[ iDir ], rhs.upper()[ iDir ] );
     }
+
+    return BBox<PointType>{lower, upper};
+}
+
+template <typename PointType>
+BBox<PointType> bboxExtendUnion( BBox<PointType> const& lhs, BBox<PointType> const& rhs )
+{
+    PointType lower;
+    PointType upper;
+
     for ( int iDir = 0; iDir < 3; ++iDir )
     {
-        upper[ iDir ] = std::min( lhs.upper()[ iDir ], rhs.upper()[ iDir ] );
+        lower[ iDir ] = std::min( lhs.lower()[ iDir ], rhs.lower()[ iDir ] );
+        upper[ iDir ] = std::max( lhs.upper()[ iDir ], rhs.upper()[ iDir ] );
     }
 
     return BBox<PointType>{lower, upper};
