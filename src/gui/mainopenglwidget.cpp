@@ -212,6 +212,8 @@ void MainOpenGLWidget::paintGL()
 
     simpleShader_.Enable();
 
+    modelview_ = glm::lookAt( camPos_, camTar_, glm::vec3( 0, 1, 0 ) );
+
     glm::mat4 mvp = projection_ * modelview_;
 
     auto mvpLoc = simpleShader_.GetUniformLocation( "MVP" );
@@ -338,6 +340,82 @@ void MainOpenGLWidget::computeOctree()
     referenceMeshNode_.updateVertexBuffer();
     otherMeshNode_.updateVertexBuffer();
 
+    doneCurrent();
+
+    update();
+}
+
+void MainOpenGLWidget::camX( double value )
+{
+    camPos_[ 0 ] = value;
+    update();
+}
+void MainOpenGLWidget::camY( double value )
+{
+    camPos_[ 1 ] = value;
+    update();
+}
+void MainOpenGLWidget::camZ( double value )
+{
+    camPos_[ 2 ] = value;
+    update();
+}
+
+void MainOpenGLWidget::tarX( double value )
+{
+    camTar_[ 0 ] = value;
+    update();
+}
+void MainOpenGLWidget::tarY( double value )
+{
+    camTar_[ 0 ] = value;
+    update();
+}
+void MainOpenGLWidget::tarZ( double value )
+{
+    camTar_[ 0 ] = value;
+    update();
+}
+
+void MainOpenGLWidget::eulerX( double value )
+{
+    eulerAxis_[ 0 ] = value;
+}
+
+void MainOpenGLWidget::eulerY( double value )
+{
+    eulerAxis_[ 1 ] = value;
+}
+void MainOpenGLWidget::eulerZ( double value )
+{
+    eulerAxis_[ 2 ] = value;
+}
+
+void MainOpenGLWidget::posX( double value )
+{
+    translate_[ 0 ] = value;
+}
+void MainOpenGLWidget::posY( double value )
+{
+    translate_[ 1 ] = value;
+}
+void MainOpenGLWidget::posZ( double value )
+{
+    translate_[ 2 ] = value;
+}
+
+void MainOpenGLWidget::refreshTransformation()
+{
+    glm::mat4 eulerTransform = glm::eulerAngleXYZ( eulerAngle, eulerAxis );
+    glm::mat4 translation    = glm::translate( glm::mat4{1.f}, translate_ );
+
+    otherMeshTransform_ = translation * eulerTransform;
+    otherMeshNode_.mesh = otherMeshOrig_;
+    applyTransform( otherMeshNode_.mesh, otherMeshTransform_ );
+
+    otherMesh_.refreshBuffer();
+    makeCurrent();
+    otherMeshNode_.updateVertexBuffer();
     doneCurrent();
 
     update();
