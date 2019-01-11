@@ -5,6 +5,7 @@
 #include "OpenGLMeshRender/meshnode.h"
 #include "OpenGLShader/shader.h"
 #include "compute_octree.h"
+#include "intersect_mesh.h"
 #include "mesh.h"
 
 #include <QOpenGLWidget>
@@ -89,6 +90,8 @@ private:
 
 
     std::unique_ptr<ComputeOctree<Mesh::MeshT>> computeOctree_;
+
+    std::unique_ptr<IntersectMesh> intersectMesh_;
 
 
     S3DE::Shader simpleShader_;
