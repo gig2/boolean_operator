@@ -24,24 +24,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="octreeCompute">
-    <property name="geometry">
-     <rect>
-      <x>820</x>
-      <y>60</y>
-      <width>121</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>compute Octree</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>100</y>
+      <y>80</y>
       <width>291</width>
       <height>231</height>
      </rect>
@@ -150,7 +137,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>350</y>
+      <y>320</y>
       <width>341</width>
       <height>281</height>
      </rect>
@@ -167,8 +154,128 @@
        <height>241</height>
       </rect>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2"/>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>angle Y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>pos z</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>pos y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QDoubleSpinBox" name="angleX">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>angle X</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QDoubleSpinBox" name="posY">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QDoubleSpinBox" name="posX">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QDoubleSpinBox" name="angleY">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QDoubleSpinBox" name="posZ">
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>pos x</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QDoubleSpinBox" name="angleZ">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>angle Z</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>10</y>
+      <width>261</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="octreeCompute">
+       <property name="text">
+        <string>compute Octree</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="refreshPosition">
+       <property name="text">
+        <string>Refresh position</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -226,7 +333,6 @@
     <slot>eulerX(double)</slot>
     <slot>eulerY(double)</slot>
     <slot>eulerZ(double)</slot>
-    <slot>eulerAngle(double)</slot>
     <slot>posX(double)</slot>
     <slot>posY(double)</slot>
     <slot>posZ(double)</slot>
@@ -409,6 +515,118 @@
     <hint type="destinationlabel">
      <x>400</x>
      <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>posX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>posX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>posY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>posY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>429</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>posZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>posZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>468</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>angleX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>eulerX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>507</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>angleY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>eulerY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>546</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>angleZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>eulerZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>888</x>
+     <y>585</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>refreshPosition</sender>
+   <signal>clicked()</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>refreshTransformation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1006</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>335</y>
     </hint>
    </hints>
   </connection>
