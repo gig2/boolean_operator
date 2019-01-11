@@ -94,8 +94,8 @@ void applyTransform( MeshType& openmesh, glm::mat4 otherMeshTransform )
 
 MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     : QOpenGLWidget( parent )
-    , bunny_{"bunnyLowPoly.obj"}
-    , bunnyNode_{bunny_}
+    , referenceMesh_{"bunnyLowPoly.obj"}
+    , referenceMeshNode_{referenceMesh_}
     , otherMesh_{}
     , otherMeshNode_{otherMesh_}
 
@@ -113,9 +113,6 @@ MainOpenGLWidget::MainOpenGLWidget( QWidget* parent )
     setFormat( format );
 
     create();
-
-    bunnyTransform_ = glm::mat4{
-        1.f}; // glm::rotate( glm::mat4{1.f}, glm::radians( 90.f ), glm::vec3( 1, 0, 0 ) );
 
     otherMeshTransform_ = glm::translate( glm::mat4{1.f}, glm::vec3{.4, 0., 0.} );
 }
@@ -135,7 +132,7 @@ void MainOpenGLWidget::initializeGL()
     int const positionLocation{0};
     int const colorLocation{1};
 
-    bunnyNode_.updateVertexBuffer( positionLocation, colorLocation );
+    referenceMeshNode_.updateVertexBuffer( positionLocation, colorLocation );
 
     simpleShader_.setVertexShader( "shader/color.vert" );
     simpleShader_.setFragmentShader( "shader/color.frag" );
@@ -167,10 +164,10 @@ void MainOpenGLWidget::initializeGL()
 
     previousTime_ = std::chrono::high_resolution_clock::now();
 
-    resetColors( bunny_.mesh );
+    resetColors( referenceMesh_.mesh );
 
-    bunny_.refreshBuffer();
-    bunnyNode_.updateVertexBuffer();
+    referenceMesh_.refreshBuffer();
+    referenceMeshNode_.updateVertexBuffer();
 
     // HERE we create the mesh
     auto& openmesh = otherMesh_.mesh;
@@ -185,29 +182,15 @@ void MainOpenGLWidget::initializeGL()
     // set a colors
     resetColors( openmesh );
 
+    otherMeshOrig_ = openmesh;
+
     applyTransform( openmesh, otherMeshTransform_ );
-#if 0
-    std::for_each( openmesh.vertices_begin(), openmesh.vertices_end(),
-                   [&openmesh, this]( auto const& vh ) //
-                   {
-                       auto point = openmesh.point( vh );
-                       glm::vec4 vpoint{point[ 0 ], point[ 1 ], point[ 2 ], 1.};
-
-                       vpoint = otherMeshTransform_ * vpoint;
-
-                       for ( int iDir = 0; iDir < 3; ++iDir )
-                       {
-                           point[ iDir ] = vpoint[ iDir ];
-                       }
-
-                       openmesh.set_point( vh, point );
-                   } );
-#endif
 
     otherMesh_.refreshBuffer();
     otherMeshNode_.updateVertexBuffer();
 
-    computeOctree_ = std::make_unique<ComputeOctree<Mesh::MeshT>>( bunny_.mesh, otherMesh_.mesh );
+    computeOctree_
+        = std::make_unique<ComputeOctree<Mesh::MeshT>>( referenceMesh_.mesh, otherMesh_.mesh );
 }
 
 void MainOpenGLWidget::resizeGL( int width, int height )
@@ -236,7 +219,7 @@ void MainOpenGLWidget::paintGL()
 
     glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( mvp ) );
 
-    bunnyNode_.draw();
+    referenceMeshNode_.draw();
 
     otherMeshNode_.draw();
 
@@ -247,16 +230,16 @@ void MainOpenGLWidget::paintGL()
 
 void MainOpenGLWidget::loadReferenceMesh( QString filename )
 {
-    bunny_.load( filename.toStdString() );
+    referenceMesh_.load( filename.toStdString() );
 
 
-    resetColors( bunny_.mesh );
+    resetColors( referenceMesh_.mesh );
 
-    bunny_.refreshBuffer();
+    referenceMesh_.refreshBuffer();
 
 
     makeCurrent();
-    bunnyNode_.updateVertexBuffer();
+    referenceMeshNode_.updateVertexBuffer();
     doneCurrent();
 
     update();
@@ -283,7 +266,8 @@ void MainOpenGLWidget::loadOtherMesh( QString filename )
 
 void MainOpenGLWidget::computeOctree()
 {
-    computeOctree_ = std::make_unique<ComputeOctree<Mesh::MeshT>>( bunny_.mesh, otherMesh_.mesh );
+    computeOctree_
+        = std::make_unique<ComputeOctree<Mesh::MeshT>>( referenceMesh_.mesh, otherMesh_.mesh );
 
     update();
 }
