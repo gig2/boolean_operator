@@ -19,9 +19,8 @@ public:
         , parent_{parent}
     {
         //
-        auto canGoFuther = [this]() { return level_ < maxDepth_; };
 
-        if ( canGoFuther() )
+        if ( canGoFurther_() )
         {
             PointType lower = boundingBox_.lower();
             PointType upper = boundingBox_.upper();
@@ -61,6 +60,11 @@ public:
         }
     }
 
+    FaceContainerType const& getMesh1In() const { return nodeMesh1In_; }
+
+
+    FaceContainerType const& getMesh2In() const { return nodeMesh2In_; }
+
 
 private:
     BBox<PointType> boundingBox_;
@@ -71,10 +75,51 @@ private:
     FaceAndBBoxType const& faceAndBBox1_;
     FaceAndBBoxType const& faceAndBBox2_;
 
+
     int const level_{0};
 
     int const maxDepth_{5};
 
     Octree* parent_{nullptr};
     std::array<std::unique_ptr<Octree>, 8> children_;
+
+    int const minTriangle{3};
+
+    FaceContainerType nodeMesh1In_;
+    FaceContainerType nodeMesh2In_;
+
+    bool canGoFurther_()
+    {
+        bool lowerThanMaxDepth = level_ < maxDepth_;
+
+        int na = 0;
+        int nb = 0;
+
+        auto computeN = [this]( auto const& meshin, auto const& faceAndBBox, auto& faceList ) {
+            int acc = 0;
+            for ( auto const& fh : meshin )
+            {
+                auto const& faceToBBox = faceAndBBox.faceToBBox;
+                auto faceIt            = faceToBBox.find( fh );
+                if ( faceIt != std::end( faceToBBox ) )
+                {
+                    if ( intersect( faceIt->second, boundingBox_ ) )
+                    {
+                        ++acc;
+                        faceList.push_back( fh );
+                    }
+                }
+            }
+            return acc;
+        };
+
+        na = computeN( mesh1in_, faceAndBBox1_, nodeMesh1In_ );
+        nb = computeN( mesh2in_, faceAndBBox2_, nodeMesh2In_ );
+
+        bool greaterThanMinTriangle = na > minTriangle || nb > minTriangle;
+
+        bool notNull = na > 0 && nb > 0;
+
+        return lowerThanMaxDepth && greaterThanMinTriangle && notNull;
+    }
 };
