@@ -264,6 +264,26 @@ void MainOpenGLWidget::loadOtherMesh( QString filename )
     update();
 }
 
+template <typename OctreeType>
+void callIntersect( OctreeType& octree )
+{
+    if ( octree.isLeaf() )
+    {
+        std::cout << "Na: " << octree.getMesh1In().size() << "\n";
+        std::cout << "Nb: " << octree.getMesh2In().size() << "\n";
+    }
+    else
+    {
+        auto const& childrens = octree.childrens();
+        for ( auto const& children : childrens )
+        {
+            callIntersect( *children );
+        }
+    }
+}
+
+
+
 void MainOpenGLWidget::computeOctree()
 {
     try
@@ -275,6 +295,14 @@ void MainOpenGLWidget::computeOctree()
     {
         std::cerr << e.what() << "\n";
         computeOctree_ = nullptr;
+    }
+
+    if ( computeOctree_ )
+    {
+        auto const& octree = computeOctree_->octree();
+        std::cout << "Na and Nb populations\n";
+        callIntersect( octree );
+        std::cout << "***********************\n";
     }
 
     update();
