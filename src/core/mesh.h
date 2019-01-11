@@ -34,6 +34,8 @@ public:
 
     Mesh() = default;
 
+    void load( std::string filename );
+
     MeshT mesh;
 
 

@@ -61,6 +61,11 @@ signals:
 
 public slots:
 
+    void loadReferenceMesh( QString );
+    void loadOtherMesh( QString );
+
+    void computeOctree();
+
 protected:
     virtual void initializeGL() override;
 
@@ -80,7 +85,10 @@ private:
 
     Mesh otherMesh_;
     MeshNode<Mesh> otherMeshNode_;
+    Mesh::MeshT otherMeshOrig_;
     glm::mat4 otherMeshTransform_{1.f};
+    std::string otherMeshName_;
+
 
     std::unique_ptr<ComputeOctree<Mesh::MeshT>> computeOctree_;
 
