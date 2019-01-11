@@ -208,17 +208,10 @@ void MainOpenGLWidget::paintGL()
 
     auto mvpLoc = simpleShader_.GetUniformLocation( "MVP" );
 
-    // applyBunny Transforms
 
-    glm::mat4 bunnyMvp = mvp;
-
-    glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( bunnyMvp ) );
+    glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( mvp ) );
 
     bunnyNode_.draw();
-
-    glm::mat4 transform = mvp;
-
-    glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, glm::value_ptr( transform ) );
 
     otherMeshNode_.draw();
 

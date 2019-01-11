@@ -54,8 +54,8 @@ TEST( meshFaceAndBBox, computeCorrectBoxes )
     mesh2.add_face( faceVhandles );
 
 
-    auto faceAndBBox1 = MeshFaceAndBBox{mesh1};
-    auto faceAndBBox2 = MeshFaceAndBBox{mesh2};
+    auto faceAndBBox1 = MeshFaceAndBBox<MeshT>{mesh1};
+    auto faceAndBBox2 = MeshFaceAndBBox<MeshT>{mesh2};
 
     auto const& mesh1box = faceAndBBox1.meshBBox;
 
