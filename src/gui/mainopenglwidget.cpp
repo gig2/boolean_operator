@@ -156,7 +156,7 @@ void MainOpenGLWidget::initializeGL()
 
 
     modelview_
-        = glm::lookAt( glm::vec3( -1., 1., 1. ), glm::vec3( 0., 0., 0. ), glm::vec3( 0, 1, 0 ) );
+        = glm::lookAt( glm::vec3( 1., 1., 1. ), glm::vec3( 0., 0., 0. ), glm::vec3( 0, 1, 0 ) );
 
     //
     glEnable( GL_DEPTH_TEST );
@@ -265,7 +265,7 @@ void MainOpenGLWidget::loadOtherMesh( QString filename )
 }
 
 template <typename OctreeType, typename Functor>
-void applyOnOctree( OctreeType const& octree, Functor function )
+void applyOnOctree( OctreeType const& octree, Functor&& function )
 {
     if ( octree.isLeaf() )
     {
@@ -282,7 +282,7 @@ void applyOnOctree( OctreeType const& octree, Functor function )
         auto const& childrens = octree.childrens();
         for ( auto const& children : childrens )
         {
-            callIntersect( *children );
+            applyOnOctree( *children, function );
         }
     }
 }
@@ -313,6 +313,7 @@ void MainOpenGLWidget::computeOctree()
     {
         computeOctree_
             = std::make_unique<ComputeOctree<Mesh::MeshT>>( referenceMesh_.mesh, otherMesh_.mesh );
+        intersectMesh_ = std::make_unique<IntersectMesh>( referenceMesh_.mesh, otherMesh_.mesh );
     }
     catch ( std::exception const& e )
     {
@@ -323,10 +324,21 @@ void MainOpenGLWidget::computeOctree()
     if ( computeOctree_ )
     {
         auto const& octree = computeOctree_->octree();
-        std::cout << "Na and Nb populations\n";
-        callIntersect( octree );
-        std::cout << "***********************\n";
+        if ( intersectMesh_ )
+        {
+            applyOnOctree( octree, *intersectMesh_ );
+        }
     }
+
+    referenceMesh_.refreshBuffer();
+    otherMesh_.refreshBuffer();
+
+    makeCurrent();
+
+    referenceMeshNode_.updateVertexBuffer();
+    otherMeshNode_.updateVertexBuffer();
+
+    doneCurrent();
 
     update();
 }
