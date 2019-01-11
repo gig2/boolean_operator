@@ -12,7 +12,6 @@ add_library(boolean_operator_core ${core_sources} ${core_headers})
 
 target_include_directories(boolean_operator_core PUBLIC
   $<BUILD_INTERFACE:${OPENMESH_INCLUDE_DIRS}>
-  $<BUILD_INTERFACE:${includeDir}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>)
 
