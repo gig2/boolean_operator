@@ -264,6 +264,29 @@ void MainOpenGLWidget::loadOtherMesh( QString filename )
     update();
 }
 
+template <typename OctreeType, typename Functor>
+void applyOnOctree( OctreeType const& octree, Functor function )
+{
+    if ( octree.isLeaf() )
+    {
+        auto const& mesh1in = octree.getMesh1In();
+        auto const& mesh2in = octree.getMesh2In();
+
+        if ( mesh1in.size() > 0 && mesh2in.size() > 0 )
+        {
+            function( mesh1in, mesh2in );
+        }
+    }
+    else
+    {
+        auto const& childrens = octree.childrens();
+        for ( auto const& children : childrens )
+        {
+            callIntersect( *children );
+        }
+    }
+}
+
 template <typename OctreeType>
 void callIntersect( OctreeType& octree )
 {
