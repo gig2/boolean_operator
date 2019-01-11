@@ -54,7 +54,7 @@ BBox<typename MeshType::Point> bboxFromFace( MeshType const& mesh,
 
 
 
-    return BBox{lower, upper};
+    return BBox<Point>{lower, upper};
 }
 
 template <typename PointType>

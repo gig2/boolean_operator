@@ -3,6 +3,8 @@
 #include <array>
 #include <memory>
 
+#include "bbox.h"
+
 template <typename PointType, typename FaceContainerType, typename FaceAndBBoxType>
 class Octree
 {
@@ -65,6 +67,16 @@ public:
 
     FaceContainerType const& getMesh2In() const { return nodeMesh2In_; }
 
+    auto& childrens() { return children_; }
+
+    auto const& childrens() const { return children_; }
+
+    auto const& boundingBox() const { return boundingBox_; }
+
+    Octree const* parent() const { return parent_; }
+
+    // with an octree, it is either all children or no children at all
+    bool isLeaf() const { return children_[ 0 ] == nullptr; }
 
 private:
     BBox<PointType> boundingBox_;
