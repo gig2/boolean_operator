@@ -1,11 +1,13 @@
 set (core_sources
+  intersect_mesh.cpp
   mesh.cpp)
 set (core_headers
   bbox.h
   compute_octree.h
-  octree.h
+  intersect_mesh.h
   mesh.h
-  mesh_face_bbox.h)
+  mesh_face_bbox.h
+  octree.h)
 
 
 add_library(boolean_operator_core ${core_sources} ${core_headers})
