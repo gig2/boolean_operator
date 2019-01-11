@@ -326,6 +326,9 @@ void MainOpenGLWidget::computeOctree()
         computeOctree_ = nullptr;
     }
 
+    resetColors( referenceMesh_.mesh );
+    resetColors( otherMesh_.mesh );
+
     if ( computeOctree_ )
     {
         auto const& octree = computeOctree_->octree();
@@ -334,6 +337,7 @@ void MainOpenGLWidget::computeOctree()
             applyOnOctree( octree, *intersectMesh_ );
         }
     }
+
 
     referenceMesh_.refreshBuffer();
     otherMesh_.refreshBuffer();

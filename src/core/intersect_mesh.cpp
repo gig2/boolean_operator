@@ -152,7 +152,7 @@ void IntersectMesh::operator()( std::vector<FaceHandle> const& mesh1in,
     };
 
     colorIntersect( mesh1 );
-    colorIntersect( mesh2 );
+    // colorIntersect( mesh2 );
 
     genere_boucles();
 
